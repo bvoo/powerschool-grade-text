@@ -1,9 +1,9 @@
-import requests
-import json
-from bs4 import BeautifulSoup
-import logging
-import log as log
 from twilio.rest import Client
+from bs4 import BeautifulSoup
+import log as log
+import requests
+import logging
+import json
 
 log.log()
 
@@ -14,7 +14,6 @@ with open('secrets.json') as f:
 Client = Client(secrets['account_sid'], secrets['auth_token'])
 
 url = 'https://' + secrets['district'] + '.powerschool.com/guardian/home.html'
-
 
 data = {
     'dbpw': secrets['password'],
@@ -38,6 +37,7 @@ if r.status_code == 200:
 
 soup = BeautifulSoup(r.text, 'html.parser')
 
+
 def sendSms(text):
     logging.info('Sending SMS')
     
@@ -50,7 +50,6 @@ def sendSms(text):
     )
 
     logging.success('Sent SMS!')
-
 
 
 def getGrades():
@@ -97,5 +96,5 @@ def getGrades():
     logging.success('Got grades!')
     sendSms(grades)
 
-
 getGrades()
+logging.success('Done!')
