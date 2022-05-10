@@ -13,7 +13,7 @@ with open('secrets.json') as f:
 
 Client = Client(secrets['account_sid'], secrets['auth_token'])
 
-url = 'https://mlbc.powerschool.com/guardian/home.html'
+url = 'https://' + secrets['district'] + '.powerschool.com/guardian/home.html'
 
 
 data = {
