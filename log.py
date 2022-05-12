@@ -49,7 +49,7 @@ def log():
             return color + log + reset
 
 
-    logger = logging.getLogger()
+    logger = logging.getLogger('main')
     logger.setLevel(logging.DEBUG)
 
     logger.addHandler(handler())

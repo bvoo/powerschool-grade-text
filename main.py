@@ -2,13 +2,15 @@ from twilio.rest import Client
 from bs4 import BeautifulSoup
 import log as log
 import requests
-import logging
 import json
+import logging
 
 log.log()
 
+logger = logging.getLogger('main')
+
 with open('secrets.json') as f:
-    logging.info('Loading secrets')
+    logger.info('Loading secrets')
     secrets = json.load(f)
 
 Client = Client(secrets['account_sid'], secrets['auth_token'])
@@ -33,29 +35,29 @@ data = {
 
 r = requests.post(url, data=data)
 if r.status_code == 200:
-    logging.success('Logged in!')
+    logger.success('Logged in!')
 
 soup = BeautifulSoup(r.text, 'html.parser')
 
 
 def sendSms(text):
-    logging.info('Sending SMS')
-    
+    logger.info('Sending SMS')
+  
     text = '\n'.join(['{}: {}'.format(grade['name'], grade['grade']) for grade in text])
-    
+  
     Client.messages.create(
         body=text,
         from_=secrets['twilio_number'],
-        to=secrets['phone_number']
+        to=secrets['target_number']
     )
 
-    logging.success('Sent SMS!')
+    logger.success('Sent SMS!')
 
 
 def getGrades():
     grades = []
 
-    logging.info('Getting grades')
+    logger.info('Getting grades')
     lookup = soup.find('div', id='quickLookup')
     
     table = lookup.find('table')
@@ -86,15 +88,15 @@ def getGrades():
                 else:
                     text = td.text
                 
-                logging.info('{}: {}'.format(headers[index - 12].text, text))
+                logger.info('{}: {}'.format(headers[index - 12].text, text))
 
                 grades.append({
                     'name': headers[index - 12].text,
                     'grade': text
                 })
     
-    logging.success('Got grades!')
+    logger.success('Got grades!')
     sendSms(grades)
 
 getGrades()
-logging.success('Done!')
+logger.success('Done!')
